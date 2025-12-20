@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-auth
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      target: local
+    container_name: auth_service
+    depends_on:
+      - postgres
+    ports:
+      - "8083:8083"
+    networks:
+      - app-network
+volumes:
+  postgres_data:
+networks:
+  app-network:
+    driver: bridge
+    name: eventure-network
