@@ -23,6 +23,6 @@ echo Docker Compose started successfully!
 
 echo.
 echo All operations completed successfully!
-echo You can now access the application at http://localhost:8080
+echo You can now access the application at http://localhost:8083
 
 pause
