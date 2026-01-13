@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.eventure.auth_service.model.enums.AuthProvider; // Імпорт
-import org.eventure.auth_service.model.enums.Role;         // Імпорт
+import org.eventure.auth_service.model.enums.AuthProvider;
+import org.eventure.auth_service.model.enums.Role;
 
 @Entity
 @Table(name = "users")
