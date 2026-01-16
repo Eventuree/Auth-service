@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS social_auth_identities(
 
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
+    full_name VARCHAR(50),
     email VARCHAR(255) NOT NULL UNIQUE,
     role VARCHAR(50) DEFAULT 'USER',
     auth_provider VARCHAR(50) DEFAULT 'LOCAL'
