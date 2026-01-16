@@ -5,11 +5,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.eventure.auth_service.model.dto.AuthResponse;
 import org.eventure.auth_service.model.dto.LoginRequestDto;
+import org.eventure.auth_service.model.dto.LogoutRequest;
 import org.eventure.auth_service.model.dto.RegisterRequestDto;
 import org.eventure.auth_service.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -52,14 +55,13 @@ public class AuthController {
     
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(
-        @RequestHeader("Authorization") String refreshToken
+    public ResponseEntity<Map<String, String>> logout(
+            @RequestBody LogoutRequest request
     ) {
-        if (refreshToken.startsWith("Bearer ")) {
-            refreshToken = refreshToken.substring(7);
-        }
         
-        authService.logout(refreshToken);
-        return ResponseEntity.noContent().build();
+        authService.logout(request.getRefreshToken());
+        return ResponseEntity.ok(Map.of(
+                "message", "Logged out successfully"
+        ));
     }
 }
