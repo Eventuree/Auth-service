@@ -39,7 +39,7 @@ public class SecurityConfig {
                     registry.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // ✅ Ніяких сесій, тільки JWT
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
