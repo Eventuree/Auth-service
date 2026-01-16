@@ -21,12 +21,23 @@ public class JwtUtils {
     @Value("${jwt.expiration}")
     private long expiration;
 
+    @Value("${jwt.refresh-expiration}")
+    private long refreshExpiration;
+
     public String generateToken(String email, Role role) {
+        return buildToken(email, role, expiration);
+    }
+
+    public String generateRefreshToken(String email, Role role) {
+        return buildToken(email, role, refreshExpiration);
+    }
+
+    private String buildToken(String email, Role role, long expirationTime) {
         return Jwts.builder()
                 .setSubject(email)
                 .claim("role", role.name())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
