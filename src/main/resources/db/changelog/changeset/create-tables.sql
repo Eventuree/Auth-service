@@ -2,37 +2,43 @@
 
 --changeset bovsunovsky:create-tables
 
+CREATE TABLE IF NOT EXISTS users (
+    id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    role VARCHAR(50) NOT NULL DEFAULT 'USER',
+    auth_provider VARCHAR(50) NOT NULL DEFAULT 'LOCAL'
+    );
+
 CREATE TABLE IF NOT EXISTS refresh_tokens(
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT,
-    token_hash VARCHAR(255),
-    expires_at TIMESTAMP,
-    issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_id BIGINT NOT NULL,
+    token_hash VARCHAR(255) NOT NULL UNIQUE,
+    expires_at TIMESTAMP NOT NULL,
+    issued_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     client_ip VARCHAR(50),
-    user_agent VARCHAR
+    user_agent VARCHAR,
+    CONSTRAINT fk_refresh_tokens_user FOREIGN KEY (user_id)
+    REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS auth_credentials(
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT,
-    email VARCHAR(255),
-    password_hash VARCHAR(255),
-    account_status VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    user_id BIGINT NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    account_status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_auth_credentials_user FOREIGN KEY (user_id)
+    REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS social_auth_identities(
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT,
-    provider_name VARCHAR(50),
-    provider_user_id VARCHAR(255),
+    user_id BIGINT NOT NULL,
+    provider_name VARCHAR(50) NOT NULL,
+    provider_user_id VARCHAR(255) NOT NULL,
     login_data JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS users (
-    id BIGSERIAL PRIMARY KEY,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    role VARCHAR(50) DEFAULT 'USER',
-    auth_provider VARCHAR(50) DEFAULT 'LOCAL'
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_social_auth_user FOREIGN KEY (user_id)
+    REFERENCES users(id) ON DELETE CASCADE
 );

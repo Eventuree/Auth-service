@@ -6,9 +6,11 @@ import org.eventure.auth_service.security.JwtAuthenticationFilter;
 import org.eventure.auth_service.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -27,9 +29,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/", "/login", "/error").permitAll();
+                    registry.requestMatchers("/oauth2/**").permitAll();
+                    registry.requestMatchers("/api/auth/refresh").permitAll();
+                    registry.requestMatchers("/api/auth/login").permitAll();
+                    registry.requestMatchers("/api/auth/register").permitAll();
+                    registry.requestMatchers("/api/auth/logout").authenticated();
                     registry.requestMatchers("/api/test/**").authenticated();
                     registry.anyRequest().authenticated();
                 })
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
@@ -37,7 +47,11 @@ public class SecurityConfig {
                         .successHandler(successHandler)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(Customizer.withDefaults())
                 .build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

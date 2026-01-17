@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.eventure.auth_service.model.enums.AccountStatus;
 
 import java.time.LocalDateTime;
 
@@ -19,16 +20,19 @@ public class AuthCredentials {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id",nullable = false, unique = true)
     private Long userId;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password_hash")
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Column(name = "account_status")
-    private String accountStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "account_status", nullable = false)
+    @Builder.Default
+    private AccountStatus accountStatus = AccountStatus.ACTIVE;
 
     @Column(name = "created_at")
     @Builder.Default

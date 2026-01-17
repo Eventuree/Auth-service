@@ -23,11 +23,17 @@ services:
       - postgres
     ports:
       - "8083:8083"
+    environment:
+      # RabbitMQ
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
     networks:
       - app-network
 volumes:
   postgres_data:
 networks:
   app-network:
-    driver: bridge
+    external: true
     name: eventure-network
