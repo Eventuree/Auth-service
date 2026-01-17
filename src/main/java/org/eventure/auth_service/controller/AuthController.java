@@ -8,6 +8,7 @@ import org.eventure.auth_service.model.dto.LoginRequestDto;
 import org.eventure.auth_service.model.dto.LogoutRequest;
 import org.eventure.auth_service.model.dto.RegisterRequestDto;
 import org.eventure.auth_service.service.AuthService;
+import org.eventure.auth_service.utills.HttpRequestUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,19 +24,27 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
-        @Valid @RequestBody RegisterRequestDto request,
-        HttpServletRequest httpRequest
-    ) {
-        AuthResponse response = authService.register(request, httpRequest);
+            @Valid @RequestBody RegisterRequestDto request,
+            HttpServletRequest httpRequest) {
+
+        String ipAddress = HttpRequestUtils.getClientIp(httpRequest);
+        String userAgent = HttpRequestUtils.getUserAgent(httpRequest);
+
+        AuthResponse response = authService.register(request, ipAddress, userAgent);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
         @Valid @RequestBody LoginRequestDto request,
         HttpServletRequest httpRequest
     ) {
-        AuthResponse response = authService.login(request, httpRequest);
+
+        String ipAddress = HttpRequestUtils.getClientIp(httpRequest);
+        String userAgent = HttpRequestUtils.getUserAgent(httpRequest);
+
+        AuthResponse response = authService.login(request, ipAddress, userAgent);
         return ResponseEntity.ok(response);
     }
     
@@ -45,11 +54,11 @@ public class AuthController {
         @RequestHeader("Authorization") String refreshToken,
         HttpServletRequest httpRequest
     ) {
-        if (refreshToken.startsWith("Bearer ")) {
-            refreshToken = refreshToken.substring(7);
-        }
+
+        String ipAddress = HttpRequestUtils.getClientIp(httpRequest);
+        String userAgent = HttpRequestUtils.getUserAgent(httpRequest);
         
-        AuthResponse response = authService.refreshToken(refreshToken, httpRequest);
+        AuthResponse response = authService.refreshToken(refreshToken, ipAddress, userAgent);
         return ResponseEntity.ok(response);
     }
     
