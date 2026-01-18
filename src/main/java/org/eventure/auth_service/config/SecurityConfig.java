@@ -22,6 +22,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomAuthenticationSuccessHandler successHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,11 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/", "/login", "/error").permitAll();
                     registry.requestMatchers("/oauth2/**").permitAll();
-                    registry.requestMatchers("/api/auth/refresh").permitAll();
-                    registry.requestMatchers("/api/auth/login").permitAll();
-                    registry.requestMatchers("/api/auth/register").permitAll();
-                    registry.requestMatchers("/api/auth/register/google").permitAll();
-                    registry.requestMatchers("/api/auth/logout").authenticated();
+                    registry.requestMatchers("/api/auth/**").permitAll();
                     registry.requestMatchers("/api/test/**").authenticated();
                     registry.anyRequest().authenticated();
                 })
@@ -47,6 +44,7 @@ public class SecurityConfig {
                         )
                         .successHandler(successHandler)
                 )
+                .addFilterBefore(apiKeyAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

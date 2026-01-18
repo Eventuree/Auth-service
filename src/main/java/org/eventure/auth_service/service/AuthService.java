@@ -49,7 +49,7 @@ public class AuthService {
 
         User user = User.builder()
                 .email(request.getEmail())
-                .fullName(request.getFirstName()+request.getLastName())
+                .fullName(request.getFirstName() + " " + request.getLastName())
                 .role(Role.USER)
                 .authProvider(AuthProvider.LOCAL)
                 .build();
