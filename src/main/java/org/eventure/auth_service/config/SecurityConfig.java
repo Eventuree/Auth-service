@@ -3,7 +3,7 @@ package org.eventure.auth_service.config;
 import lombok.RequiredArgsConstructor;
 import org.eventure.auth_service.security.CustomAuthenticationSuccessHandler;
 import org.eventure.auth_service.security.JwtAuthenticationFilter;
-import org.eventure.auth_service.service.impl.CustomOAuth2UserService;
+import org.eventure.auth_service.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,6 +22,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomAuthenticationSuccessHandler successHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -30,11 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/", "/login", "/error").permitAll();
                     registry.requestMatchers("/oauth2/**").permitAll();
-                    registry.requestMatchers("/api/auth/refresh").permitAll();
-                    registry.requestMatchers("/api/auth/login").permitAll();
-                    registry.requestMatchers("/api/auth/register").permitAll();
-                    registry.requestMatchers("/api/auth/password-reset/**").permitAll();
-                    registry.requestMatchers("/api/auth/logout").authenticated();
+                    registry.requestMatchers("/api/auth/**").permitAll();
                     registry.requestMatchers("/api/test/**").authenticated();
                     registry.anyRequest().authenticated();
                 })

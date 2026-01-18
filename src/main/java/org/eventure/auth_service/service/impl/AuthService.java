@@ -49,6 +49,7 @@ public class AuthService {
 
         User user = User.builder()
                 .email(request.getEmail())
+                .fullName(request.getFirstName() + " " + request.getLastName())
                 .role(Role.USER)
                 .authProvider(AuthProvider.LOCAL)
                 .build();
@@ -73,6 +74,7 @@ public class AuthService {
                 accessToken,
                 refreshToken,
                 savedUser.getId(),
+                savedUser.getFullName(),
                 savedUser.getEmail(),
                 savedUser.getRole().name()
         );
@@ -108,6 +110,7 @@ public class AuthService {
                 accessToken,
                 refreshToken,
                 user.getId(),
+                user.getFullName(),
                 user.getEmail(),
                 user.getRole().name()
         );
@@ -148,6 +151,7 @@ public class AuthService {
                 newAccessToken,
                 newRefreshToken,
                 user.getId(),
+                user.getFullName(),
                 user.getEmail(),
                 user.getRole().name()
         );

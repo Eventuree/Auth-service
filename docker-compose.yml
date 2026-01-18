@@ -14,11 +14,11 @@ services:
     networks:
       - app-network
 
-  app:
+  auth-service:
     build:
       context: .
       target: local
-    container_name: auth_service
+    container_name: auth-service
     depends_on:
       - postgres
     ports:
