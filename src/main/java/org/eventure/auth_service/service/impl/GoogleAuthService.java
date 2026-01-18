@@ -1,4 +1,4 @@
-package org.eventure.auth_service.service;
+package org.eventure.auth_service.service.impl;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;

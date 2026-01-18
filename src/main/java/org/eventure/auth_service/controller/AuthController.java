@@ -4,10 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.eventure.auth_service.model.dto.*;
-import org.eventure.auth_service.service.AuthService;
+import org.eventure.auth_service.service.impl.AuthService;
 import org.eventure.auth_service.utills.HttpRequestUtils;
 import org.springframework.http.HttpStatus;
-import org.eventure.auth_service.service.GoogleAuthService;
+import org.eventure.auth_service.service.impl.GoogleAuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
