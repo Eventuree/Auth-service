@@ -2,68 +2,67 @@ package org.eventure.auth_service.service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.eventure.auth_service.exception.InvalidTokenException;
 import org.eventure.auth_service.model.dto.AuthResponse;
 import org.eventure.auth_service.model.entity.User;
 import org.eventure.auth_service.model.enums.AuthProvider;
 import org.eventure.auth_service.model.enums.Role;
 import org.eventure.auth_service.repository.UserRepository;
 import org.eventure.auth_service.security.JwtUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GoogleAuthService {
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String clientId;
-
+    private final GoogleIdTokenVerifier verifier;
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
 
-    @Transactional
     public AuthResponse authenticate(String idTokenString) {
+        GoogleIdToken.Payload payload = verifyGoogleToken(idTokenString);
+
+        User user = findOrCreateUser(payload);
+
+        String accessToken = jwtUtils.generateToken(user.getEmail(), user.getRole());
+        String refreshToken = jwtUtils.generateRefreshToken(user.getEmail(), user.getRole());
+
+        return new AuthResponse(
+                accessToken,
+                refreshToken,
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getRole().name()
+        );
+    }
+
+    private GoogleIdToken.Payload verifyGoogleToken(String idTokenString) {
         try {
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                    .setAudience(Collections.singletonList(clientId))
-                    .build();
-
             GoogleIdToken idToken = verifier.verify(idTokenString);
-
             if (idToken == null) {
-                throw new IllegalArgumentException("Invalid Google ID Token");
+                throw new InvalidTokenException("Invalid Google ID Token");
             }
-
-            GoogleIdToken.Payload payload = idToken.getPayload();
-            String email = payload.getEmail();
-            String name = (String) payload.get("name");
-
-            User user = userRepository.findByEmail(email)
-                    .orElseGet(() -> registerNewGoogleUser(email, name));
-
-            String accessToken = jwtUtils.generateToken(user.getEmail(), user.getRole());
-            String refreshToken = jwtUtils.generateRefreshToken(user.getEmail(), user.getRole());
-
-            return new AuthResponse(
-                    accessToken,
-                    refreshToken,
-                    user.getId(),
-                    user.getFullName(),
-                    user.getEmail(),
-                    user.getRole().name()
-            );
-
+            return idToken.getPayload();
         } catch (GeneralSecurityException | IOException e) {
-            throw new RuntimeException("Error verifying google token", e);
+            log.error("Google token verification failed", e);
+            throw new InvalidTokenException("Google token verification failed", e);
         }
+    }
+
+    private User findOrCreateUser(GoogleIdToken.Payload payload) {
+        String email = payload.getEmail();
+        return userRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    String name = (String) payload.get("name");
+                    return registerNewGoogleUser(email, name);
+                });
     }
 
     private User registerNewGoogleUser(String email, String name) {

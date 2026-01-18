@@ -3,10 +3,7 @@ package org.eventure.auth_service.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.eventure.auth_service.model.dto.AuthResponse;
-import org.eventure.auth_service.model.dto.LoginRequestDto;
-import org.eventure.auth_service.model.dto.LogoutRequest;
-import org.eventure.auth_service.model.dto.RegisterRequestDto;
+import org.eventure.auth_service.model.dto.*;
 import org.eventure.auth_service.service.AuthService;
 import org.eventure.auth_service.utills.HttpRequestUtils;
 import org.springframework.http.HttpStatus;
@@ -37,10 +34,9 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/google")
-    public ResponseEntity<AuthResponse> googleLogin(@RequestBody Map<String, String> request) {
-        String token = request.get("token");
-        return ResponseEntity.ok(googleAuthService.authenticate(token));
+    @PostMapping("/google/login")
+    public ResponseEntity<AuthResponse> googleLogin(@RequestBody GoogleLoginRequest request) {
+        return ResponseEntity.ok(googleAuthService.authenticate(request.getIdToken()));
     }
 
 
