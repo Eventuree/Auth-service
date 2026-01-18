@@ -3,7 +3,7 @@ package org.eventure.auth_service.config;
 import lombok.RequiredArgsConstructor;
 import org.eventure.auth_service.security.CustomAuthenticationSuccessHandler;
 import org.eventure.auth_service.security.JwtAuthenticationFilter;
-import org.eventure.auth_service.service.CustomOAuth2UserService;
+import org.eventure.auth_service.service.impl.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

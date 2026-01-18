@@ -7,7 +7,7 @@ import org.eventure.auth_service.model.dto.AuthResponse;
 import org.eventure.auth_service.model.dto.LoginRequestDto;
 import org.eventure.auth_service.model.dto.LogoutRequest;
 import org.eventure.auth_service.model.dto.RegisterRequestDto;
-import org.eventure.auth_service.service.AuthService;
+import org.eventure.auth_service.service.impl.AuthService;
 import org.eventure.auth_service.utills.HttpRequestUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

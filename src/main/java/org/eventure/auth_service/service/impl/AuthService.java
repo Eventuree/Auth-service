@@ -1,4 +1,4 @@
-package org.eventure.auth_service.service;
+package org.eventure.auth_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

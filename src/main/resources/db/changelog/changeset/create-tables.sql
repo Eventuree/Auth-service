@@ -21,6 +21,22 @@ CREATE TABLE IF NOT EXISTS refresh_tokens(
     REFERENCES users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+     id BIGSERIAL PRIMARY KEY,
+     user_id BIGINT NOT NULL,
+     token_hash VARCHAR(255) NOT NULL UNIQUE,
+     expires_at TIMESTAMP NOT NULL,
+     used_at TIMESTAMP,
+     issued_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+     client_ip VARCHAR(50),
+     user_agent VARCHAR,
+
+     CONSTRAINT fk_password_reset_user
+         FOREIGN KEY (user_id)
+             REFERENCES users(id)
+             ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS auth_credentials(
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL UNIQUE,
