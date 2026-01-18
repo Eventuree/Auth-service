@@ -52,7 +52,14 @@ public class GoogleAuthService {
             String accessToken = jwtUtils.generateToken(user.getEmail(), user.getRole());
             String refreshToken = jwtUtils.generateRefreshToken(user.getEmail(), user.getRole());
 
-            return new AuthResponse(accessToken, refreshToken);
+            return new AuthResponse(
+                    accessToken,
+                    refreshToken,
+                    user.getId(),
+                    user.getFullName(),
+                    user.getEmail(),
+                    user.getRole().name()
+            );
 
         } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException("Error verifying google token", e);

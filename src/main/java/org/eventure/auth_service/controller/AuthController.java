@@ -22,18 +22,21 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final GoogleAuthService googleAuthService;
+
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
             @Valid @RequestBody RegisterRequestDto request,
             HttpServletRequest httpRequest) {
-    private final GoogleAuthService googleAuthService;
 
         String ipAddress = HttpRequestUtils.getClientIp(httpRequest);
         String userAgent = HttpRequestUtils.getUserAgent(httpRequest);
 
         AuthResponse response = authService.register(request, ipAddress, userAgent);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
     @PostMapping("/google")
     public ResponseEntity<AuthResponse> googleLogin(@RequestBody Map<String, String> request) {
         String token = request.get("token");
