@@ -3,8 +3,6 @@ package org.eventure.auth_service.repository;
 import org.eventure.auth_service.model.entity.AuthCredentials;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.lang.ScopedValue;
 import java.util.Optional;
 
 @Repository

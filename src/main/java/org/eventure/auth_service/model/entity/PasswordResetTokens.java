@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @Data
 @Entity
-@Table(name = "refresh_tokens")
+@Table(name = "password_reset_tokens")
 @AllArgsConstructor
 @NoArgsConstructor
 public class PasswordResetTokens {

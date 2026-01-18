@@ -55,6 +55,8 @@ public class PasswordResetImpl implements PasswordResetService {
 
         String hashedToken = TokenHashUtil.hashToken(rawToken);
 
+        System.err.println(hashedToken);
+
         LocalDateTime currentTime = LocalDateTime.now();
 
         PasswordResetTokens tokenEntity = PasswordResetTokens.builder()
@@ -72,6 +74,8 @@ public class PasswordResetImpl implements PasswordResetService {
     @Override
     public void validateResetToken(String rawToken) {
         String tokenHash = TokenHashUtil.hashToken(rawToken);
+
+        System.err.println(tokenHash);
 
         passwordResetRepository.findValidToken(
                 tokenHash,

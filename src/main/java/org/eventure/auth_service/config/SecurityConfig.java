@@ -33,6 +33,7 @@ public class SecurityConfig {
                     registry.requestMatchers("/api/auth/refresh").permitAll();
                     registry.requestMatchers("/api/auth/login").permitAll();
                     registry.requestMatchers("/api/auth/register").permitAll();
+                    registry.requestMatchers("/api/auth/password-reset/**").permitAll();
                     registry.requestMatchers("/api/auth/logout").authenticated();
                     registry.requestMatchers("/api/test/**").authenticated();
                     registry.anyRequest().authenticated();

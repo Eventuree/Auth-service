@@ -67,7 +67,7 @@ public class AuthService {
         String accessToken = jwtUtils.generateToken(savedUser.getEmail(), savedUser.getRole());
         String refreshToken = generateAndSaveRefreshToken(savedUser, ipAddress, userAgent);
 
-        userRegistrationPublisher.publish(savedUser, request);
+        //userRegistrationPublisher.publish(savedUser, request);
 
         return new AuthResponse(
                 accessToken,
