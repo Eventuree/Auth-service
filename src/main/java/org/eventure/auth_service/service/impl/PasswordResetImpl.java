@@ -5,6 +5,7 @@ import org.eventure.auth_service.exception.CredentialsNotFoundException;
 import org.eventure.auth_service.exception.InvalidTokenException;
 import org.eventure.auth_service.exception.UserNotFoundException;
 import org.eventure.auth_service.exception.WrongAuthProviderException;
+import org.eventure.auth_service.messaging.PasswordResetPublisher;
 import org.eventure.auth_service.model.entity.AuthCredentials;
 import org.eventure.auth_service.model.entity.PasswordResetTokens;
 import org.eventure.auth_service.model.entity.User;
@@ -13,12 +14,10 @@ import org.eventure.auth_service.repository.AuthCredentialsRepository;
 import org.eventure.auth_service.repository.PasswordResetTokensRepository;
 import org.eventure.auth_service.repository.RefreshTokensRepository;
 import org.eventure.auth_service.repository.UserRepository;
-import org.eventure.auth_service.service.EmailService;
 import org.eventure.auth_service.service.PasswordResetService;
 import org.eventure.auth_service.utills.TokenGeneratorUtil;
 import org.eventure.auth_service.utills.TokenHashUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +32,8 @@ public class PasswordResetImpl implements PasswordResetService {
     private final UserRepository userRepository;
     private final AuthCredentialsRepository authCredentialsRepository;
     private final RefreshTokensRepository refreshTokensRepository;
-    private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordResetPublisher passwordResetPublisher;
 
     @Value("${app.password-reset.timeout}")
     private long tokenExpirationTime;
@@ -51,7 +50,7 @@ public class PasswordResetImpl implements PasswordResetService {
 
         String rawToken = TokenGeneratorUtil.generateSecureToken();
 
-        emailService.sendPasswordResetMail(userEmail, rawToken);
+        passwordResetPublisher.publish(user.getEmail(), user.getFullName(), rawToken);
 
         String hashedToken = TokenHashUtil.hashToken(rawToken);
 
