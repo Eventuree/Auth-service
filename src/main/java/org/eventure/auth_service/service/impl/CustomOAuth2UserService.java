@@ -1,4 +1,4 @@
-package org.eventure.auth_service.service;
+package org.eventure.auth_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.eventure.auth_service.model.entity.SocialAuthIdentities;

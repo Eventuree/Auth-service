@@ -1,4 +1,4 @@
-package org.eventure.auth_service.service;
+package org.eventure.auth_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +68,7 @@ public class AuthService {
         String accessToken = jwtUtils.generateToken(savedUser.getEmail(), savedUser.getRole());
         String refreshToken = generateAndSaveRefreshToken(savedUser, ipAddress, userAgent);
 
-        userRegistrationPublisher.publish(savedUser, request);
+        //userRegistrationPublisher.publish(savedUser, request);
 
         return new AuthResponse(
                 accessToken,
