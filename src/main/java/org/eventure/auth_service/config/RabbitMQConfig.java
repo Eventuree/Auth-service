@@ -20,6 +20,12 @@ public class RabbitMQConfig {
     
     @Value("${rabbitmq.routing-key.user-registration}")
     private String userRegistrationRoutingKey;
+
+    @Value("${rabbitmq.queue.password-reset}")
+    private String passwordResetQueue;
+
+    @Value("${rabbitmq.routing-key.password-reset}")
+    private String passwordResetRoutingKey;
     
     @Bean
     public TopicExchange userEventsExchange() {
@@ -40,7 +46,22 @@ public class RabbitMQConfig {
             .to(userEventsExchange())
             .with(userRegistrationRoutingKey);
     }
-    
+
+    @Bean
+    public Queue passwordResetQueue() {
+        return QueueBuilder.durable(passwordResetQueue)
+                .withArgument("x-dead-letter-exchange", "user.events.dlx")
+                .build();
+    }
+
+    @Bean
+    public Binding passwordResetBinding() {
+        return BindingBuilder
+                .bind(passwordResetQueue())
+                .to(userEventsExchange())
+                .with(passwordResetRoutingKey);
+    }
+
     @Bean
     public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();

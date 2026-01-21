@@ -65,16 +65,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
-    @ExceptionHandler(EmailSendException.class)
-    public ResponseEntity<ErrorResponse> handleEmailSend(EmailSendException ex) {
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                ex.getMessage(),
-                LocalDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-    }
-
     @ExceptionHandler(WrongAuthProviderException.class)
     public ResponseEntity<ErrorResponse> handleWrongAuthProvider(WrongAuthProviderException ex) {
         ErrorResponse error = new ErrorResponse(
