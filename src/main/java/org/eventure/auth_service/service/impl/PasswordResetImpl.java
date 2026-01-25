@@ -1,6 +1,7 @@
 package org.eventure.auth_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eventure.auth_service.exception.CredentialsNotFoundException;
 import org.eventure.auth_service.exception.InvalidTokenException;
 import org.eventure.auth_service.exception.UserNotFoundException;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PasswordResetImpl implements PasswordResetService {
@@ -54,7 +56,7 @@ public class PasswordResetImpl implements PasswordResetService {
 
         String hashedToken = TokenHashUtil.hashToken(rawToken);
 
-        System.err.println(hashedToken);
+        log.error(hashedToken);
 
         LocalDateTime currentTime = LocalDateTime.now();
 
@@ -74,7 +76,7 @@ public class PasswordResetImpl implements PasswordResetService {
     public void validateResetToken(String rawToken) {
         String tokenHash = TokenHashUtil.hashToken(rawToken);
 
-        System.err.println(tokenHash);
+        log.error(tokenHash);
 
         passwordResetRepository.findValidToken(
                 tokenHash,

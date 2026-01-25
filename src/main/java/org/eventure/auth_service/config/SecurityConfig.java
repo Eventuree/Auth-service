@@ -32,8 +32,6 @@ public class SecurityConfig {
                     registry.requestMatchers("/", "/login", "/error").permitAll();
                     registry.requestMatchers("/oauth2/**").permitAll();
                     registry.requestMatchers("/api/auth/**").permitAll();
-                    registry.requestMatchers("/api/auth/password-reset/**").permitAll();
-                    registry.requestMatchers("/api/auth/login", "/api/auth/register").permitAll();
                     registry.requestMatchers("/api/test/**").authenticated();
                     registry.anyRequest().authenticated();
                 })
